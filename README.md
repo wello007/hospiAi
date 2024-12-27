@@ -89,3 +89,42 @@ npm test -- --coverage
 # Vérifier les logs
 tail -f logs/error.log
 ```
+
+## 🤖 Intégration IA
+
+L'API intègre maintenant ChatGPT pour fournir des insights cliniques enrichis :
+
+- Interprétation détaillée des scores
+- Implications pronostiques personnalisées
+- Recommandations basées sur les guidelines
+- Points de vigilance spécifiques
+
+### Timeout et Fallback
+
+En cas de non-réponse de ChatGPT sous 10 secondes, l'API bascule automatiquement vers des recommandations standards.
+
+### Structure de Réponse
+
+```json
+{
+  "status": "success",
+  "data": {
+    "score": 5,
+    "aiStatus": "success",
+    "responseTime": 1234,
+    "insights": [
+      {
+        "type": "ai-generated",
+        "category": "Interprétation",
+        "message": "...",
+        "implications": ["..."],
+        "recommendations": ["..."]
+      }
+    ],
+    "rawGPTResponse": {
+      "timestamp": "2023-11-23T12:34:56Z",
+      "content": "..."
+    }
+  }
+}
+```

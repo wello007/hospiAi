@@ -20,3 +20,16 @@
 {"level":"error","message":"Error: connect ECONNREFUSED ::1:27017","timestamp":"2024-12-27T10:58:59.461Z"}
 {"level":"error","message":"Error: connect ECONNREFUSED ::1:27017","timestamp":"2024-12-27T11:00:02.525Z"}
 {"level":"error","message":"Error: connect ECONNREFUSED ::1:27017","timestamp":"2024-12-27T11:01:37.990Z"}
+{"level":"error","message":"Erreur dans le calcul du score: startTime is not defined","timestamp":"2024-12-27T16:04:25.939Z"}
+{"level":"error","message":"Erreur lors du calcul: Erreur dans le calcul du score","timestamp":"2024-12-27T16:04:25.940Z"}
+{"level":"error","message":"Erreur dans le calcul du score: startTime is not defined","timestamp":"2024-12-27T16:04:33.021Z"}
+{"level":"error","message":"Erreur lors du calcul: Erreur dans le calcul du score","timestamp":"2024-12-27T16:04:33.021Z"}
+{"level":"error","message":"Erreur OpenAI: 404 The model `gpt-4` does not exist or you do not have access to it.","timestamp":"2024-12-27T16:11:40.709Z"}
+{"level":"error","message":"Erreur OpenAI: 404 The model `gpt-4` does not exist or you do not have access to it.","timestamp":"2024-12-27T16:15:52.857Z"}
+{"level":"error","message":"Erreur OpenAI: 404 The model `gpt-4` does not exist or you do not have access to it.","timestamp":"2024-12-27T16:15:56.790Z"}
+{"level":"error","message":"Erreur OpenAI: 404 The model `gpt-4` does not exist or you do not have access to it.","timestamp":"2024-12-27T16:15:58.897Z"}
+{"level":"error","message":"Erreur OpenAI: 404 The model `gpt-4` does not exist or you do not have access to it.","timestamp":"2024-12-27T16:18:01.177Z"}
+{"level":"error","message":"Erreur OpenAI: 404 The model `gpt-4` does not exist or you do not have access to it.","timestamp":"2024-12-27T16:20:40.085Z"}
+{"level":"error","message":"Erreur OpenAI: 404 The model `gpt-4` does not exist or you do not have access to it.","timestamp":"2024-12-27T16:28:29.802Z"}
+{"level":"error","message":"Erreur OpenAI: 404 The model `gpt-4` does not exist or you do not have access to it.","timestamp":"2024-12-27T16:28:50.593Z"}
+{"level":"error","message":"Erreur OpenAI: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.","timestamp":"2024-12-27T16:30:19.339Z"}

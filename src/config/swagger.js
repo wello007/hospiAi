@@ -482,6 +482,170 @@ const swaggerSpec = {
             description: 'Stigmates de saignement'
           }
         }
+      },
+
+      AIResponse: {
+        type: 'object',
+        properties: {
+          type: {
+            type: 'string',
+            enum: ['ai-generated', 'fallback', 'error']
+          },
+          rawGPTResponse: {
+            type: 'object',
+            properties: {
+              timestamp: {
+                type: 'string',
+                format: 'date-time'
+              },
+              content: {
+                type: 'string'
+              }
+            }
+          },
+          insights: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                type: {
+                  type: 'string',
+                  enum: ['clinical', 'warning']
+                },
+                category: {
+                  type: 'string'
+                },
+                message: {
+                  type: 'string'
+                },
+                implications: {
+                  type: 'array',
+                  items: {
+                    type: 'string'
+                  }
+                },
+                recommendations: {
+                  type: 'array',
+                  items: {
+                    type: 'string'
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      ScoreResponse: {
+        type: 'object',
+        properties: {
+          status: {
+            type: 'string',
+            enum: ['success', 'error']
+          },
+          data: {
+            type: 'object',
+            properties: {
+              score: {
+                type: 'number',
+                description: 'Valeur numérique du score'
+              },
+              reliability: {
+                type: 'number',
+                description: 'Fiabilité du calcul en pourcentage'
+              },
+              scoreName: {
+                type: 'string',
+                description: 'Nom du score calculé'
+              },
+              interpretation: {
+                type: 'string',
+                description: 'Interprétation clinique du score'
+              },
+              insights: {
+                type: 'array',
+                description: 'Analyses et recommandations cliniques',
+                items: {
+                  type: 'object',
+                  properties: {
+                    type: {
+                      type: 'string',
+                      enum: ['warning', 'critical', 'info']
+                    },
+                    category: {
+                      type: 'string'
+                    },
+                    message: {
+                      type: 'string'
+                    },
+                    implications: {
+                      type: 'array',
+                      items: {
+                        type: 'string'
+                      }
+                    },
+                    recommendations: {
+                      type: 'array',
+                      items: {
+                        type: 'string'
+                      }
+                    }
+                  }
+                }
+              },
+              responseSource: {
+                type: 'string',
+                enum: ['openai', 'local'],
+                description: 'Source des recommandations (IA ou locale)'
+              },
+              responseTime: {
+                type: 'number',
+                description: 'Temps de réponse en millisecondes'
+              },
+              fallbackReason: {
+                type: 'string',
+                description: 'Raison du fallback vers la réponse locale (si applicable)'
+              },
+              aiResponse: {
+                type: 'object',
+                description: 'Informations sur la réponse AI',
+                properties: {
+                  enabled: {
+                    type: 'boolean',
+                    description: 'Indique si l\'IA est activée pour ce score'
+                  },
+                  source: {
+                    type: 'string',
+                    enum: ['openai', 'local'],
+                    description: 'Source des recommandations'
+                  },
+                  status: {
+                    type: 'string',
+                    enum: ['success', 'fallback'],
+                    description: 'Statut de la réponse AI'
+                  },
+                  fallbackReason: {
+                    type: 'string',
+                    description: 'Raison du fallback si applicable'
+                  },
+                  raw: {
+                    type: 'object',
+                    description: 'Réponse brute de l\'IA si disponible',
+                    properties: {
+                      timestamp: {
+                        type: 'string',
+                        format: 'date-time'
+                      },
+                      content: {
+                        type: 'string'
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     responses: {
@@ -540,6 +704,56 @@ const swaggerSpec = {
                           recommendations: {
                             type: 'array',
                             items: {
+                              type: 'string'
+                            }
+                          }
+                        }
+                      }
+                    },
+                    responseSource: {
+                      type: 'string',
+                      enum: ['openai', 'local'],
+                      description: 'Source des recommandations (IA ou locale)'
+                    },
+                    responseTime: {
+                      type: 'number',
+                      description: 'Temps de réponse en millisecondes'
+                    },
+                    fallbackReason: {
+                      type: 'string',
+                      description: 'Raison du fallback vers la réponse locale (si applicable)'
+                    },
+                    aiResponse: {
+                      type: 'object',
+                      description: 'Informations sur la réponse AI',
+                      properties: {
+                        enabled: {
+                          type: 'boolean',
+                          description: 'Indique si l\'IA est activée pour ce score'
+                        },
+                        source: {
+                          type: 'string',
+                          enum: ['openai', 'local'],
+                          description: 'Source des recommandations'
+                        },
+                        status: {
+                          type: 'string',
+                          enum: ['success', 'fallback'],
+                          description: 'Statut de la réponse AI'
+                        },
+                        fallbackReason: {
+                          type: 'string',
+                          description: 'Raison du fallback si applicable'
+                        },
+                        raw: {
+                          type: 'object',
+                          description: 'Réponse brute de l\'IA si disponible',
+                          properties: {
+                            timestamp: {
+                              type: 'string',
+                              format: 'date-time'
+                            },
+                            content: {
                               type: 'string'
                             }
                           }

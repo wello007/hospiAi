@@ -1,11 +1,13 @@
 const { EUROSCORE_II_FACTORS, GRACE_FACTORS, REQUIRED_PARAMETERS, TIMI_FACTORS, CHA2DS2_VASC_FACTORS, SEPSIS_FACTORS } = require('../constants/riskFactors');
 const logger = require('../utils/logger');
+const openaiService = require('./openaiService');
 
 class ScoreCalculator {
-  calculateEuroScoreII(params) {
+  async calculateEuroScoreII(params) {
     let logit = 0;
     let reliability = 100;
     const missingParams = [];
+    const startTime = Date.now();
 
     try {
       // Vérification des paramètres requis
@@ -90,6 +92,30 @@ class ScoreCalculator {
       // Calcul du score final
       const score = (100 / (1 + Math.exp(-logit)));
 
+      // Obtenir les insights via ChatGPT
+      let aiInsights;
+      try {
+        aiInsights = await openaiService.generateMedicalInsights(
+          'euroscore2',
+          params,
+          score
+        );
+      } catch (aiError) {
+        logger.error(`Erreur OpenAI: ${aiError.message}`);
+        aiInsights = {
+          source: 'local',
+          reason: 'Erreur OpenAI',
+          type: 'fallback',
+          insights: [{
+            type: 'clinical',
+            category: 'Risque opératoire',
+            message: this.interpretScore(score),
+            implications: this.getEuroScoreImplications(score),
+            recommendations: this.getEuroScoreRecommendations(score)
+          }]
+        };
+      }
+
       // Préparation de la réponse
       const result = {
         score: parseFloat(score.toFixed(2)),
@@ -98,7 +124,27 @@ class ScoreCalculator {
         interpretation: this.interpretScore(score),
         missingParameters: missingParams,
         riskLevel: this.getRiskLevel(score),
-        insights: this.generateAIInsights(params, score, 'euroscore2')
+        insights: aiInsights.insights,
+        responseTime: Date.now() - startTime,
+        aiResponse: {
+          enabled: true,
+          source: aiInsights?.source || 'local',
+          status: aiInsights?.type === 'ai-generated' ? 'success' : 'fallback',
+          ...(aiInsights?.reason && { fallbackReason: aiInsights.reason }),
+          ...(aiInsights?.error && { 
+            error: {
+              message: aiInsights.error.message,
+              code: aiInsights.error.code,
+              type: aiInsights.error.type
+            }
+          }),
+          ...(aiInsights?.rawGPTResponse && {
+            raw: {
+              timestamp: aiInsights.rawGPTResponse.timestamp,
+              content: aiInsights.rawGPTResponse.content
+            }
+          })
+        }
       };
 
       logger.info(`Score calculé: ${JSON.stringify(result)}`);
@@ -111,24 +157,18 @@ class ScoreCalculator {
   }
 
   interpretScore(score) {
-    if (score < 1) {
-      return "Risque très faible";
-    } else if (score < 2) {
-      return "Risque faible";
-    } else if (score < 5) {
-      return "Risque modéré";
-    } else if (score < 10) {
-      return "Risque élevé";
-    } else {
-      return "Risque très élevé";
-    }
+    if (score < 2) return 'Risque très faible';
+    if (score < 5) return 'Risque faible';
+    if (score < 10) return 'Risque modéré';
+    if (score < 15) return 'Risque élevé';
+    return 'Risque très élevé';
   }
 
   getRiskLevel(score) {
-    if (score < 1) return 1;
-    if (score < 2) return 2;
-    if (score < 5) return 3;
-    if (score < 10) return 4;
+    if (score < 2) return 1;
+    if (score < 5) return 2;
+    if (score < 10) return 3;
+    if (score < 15) return 4;
     return 5;
   }
 
@@ -795,7 +835,7 @@ class ScoreCalculator {
           'Perfusion tissulaire compromise'
         ],
         recommendations: [
-          'Expansion volémique imm��diate',
+          'Expansion volémique immédiate',
           'Considérer les vasopresseurs',
           'Monitoring hémodynamique invasif'
         ]
@@ -847,11 +887,12 @@ class ScoreCalculator {
     return recommendations;
   }
 
-  calculateChildPugh(params) {
+  async calculateChildPugh(params) {
     try {
       let score = 0;
       let reliability = 100;
-      const insights = [];
+      const missingParams = [];
+      const startTime = Date.now();
 
       // Calcul du score
       if (params.ascites) {
@@ -882,22 +923,49 @@ class ScoreCalculator {
       else if (score <= 9) classification = 'B';
       else classification = 'C';
 
-      // Insights cliniques
-      insights.push({
-        type: 'clinical',
-        category: 'Pronostic',
-        message: `Cirrhose Child-Pugh ${classification}`,
-        implications: this.getChildPughImplications(classification),
-        recommendations: this.getChildPughRecommendations(classification)
-      });
+      let aiInsights;
+      try {
+        aiInsights = await openaiService.generateMedicalInsights(
+          'childpugh',
+          params,
+          score
+        );
+      } catch (aiError) {
+        logger.error(`Erreur OpenAI: ${aiError.message}`);
+        aiInsights = {
+          source: 'local',
+          reason: 'Erreur OpenAI',
+          insights: [{
+            type: 'clinical',
+            category: 'Pronostic',
+            message: `Cirrhose Child-Pugh ${classification}`,
+            implications: this.getChildPughImplications(classification),
+            recommendations: this.getChildPughRecommendations(classification)
+          }]
+        };
+      }
 
       return {
         score,
-        classification,
         reliability,
         scoreName: 'Child-Pugh',
+        classification,
         interpretation: this.interpretChildPugh(score),
-        insights
+        insights: aiInsights.insights,
+        responseSource: aiInsights.source,
+        responseTime: Date.now() - startTime,
+        aiResponse: {
+          enabled: true,
+          source: aiInsights?.source || 'local',
+          status: aiInsights?.type === 'ai-generated' ? 'success' : 'fallback',
+          ...(aiInsights?.reason && { fallbackReason: aiInsights.reason }),
+          ...(aiInsights?.rawGPTResponse && {
+            raw: {
+              timestamp: aiInsights.rawGPTResponse.timestamp,
+              content: aiInsights.rawGPTResponse.content
+            }
+          })
+        }
       };
 
     } catch (error) {
@@ -1166,6 +1234,26 @@ class ScoreCalculator {
     if (range.startsWith('less')) return value < Number(range.replace('less', ''));
     if (range.startsWith('more')) return value > Number(range.replace('more', ''));
     return value >= min && value <= max;
+  }
+
+  // Méthodes d'aide pour EuroSCORE II
+  getEuroScoreImplications(score) {
+    if (score < 2) return ['Risque opératoire très faible', 'Excellente survie attendue'];
+    if (score < 5) return ['Risque opératoire faible', 'Bonne survie attendue'];
+    if (score < 10) return ['Risque opératoire modéré', 'Surveillance post-opératoire rapprochée nécessaire'];
+    return ['Risque opératoire élevé', 'Nécessité d\'une prise en charge intensive'];
+  }
+
+  getEuroScoreRecommendations(score) {
+    if (score < 2) return ['Protocole standard', 'Surveillance habituelle'];
+    if (score < 5) return ['Optimisation pré-opératoire', 'Surveillance rapprochée 24h'];
+    if (score < 10) return ['Optimisation pré-opératoire poussée', 'Surveillance USI 48h'];
+    return [
+      'Discussion collégiale du rapport bénéfice/risque',
+      'Optimisation pré-opératoire maximale',
+      'Surveillance USI prolongée',
+      'Considérer alternatives thérapeutiques'
+    ];
   }
 }
 

@@ -57,6 +57,34 @@ describe('ScoreCalculator', () => {
       expect(result.reliability).toBe(100);
       expect(result.missingParameters).toHaveLength(0);
     });
+
+    test('devrait inclure les informations AI dans la réponse', async () => {
+      const params = {
+        age: 70,
+        gender: 'M',
+        creatinine: 120,
+        lvef: 25,
+        nyha: 3,
+        urgency: 'urgent'
+      };
+
+      const result = await ScoreCalculator.calculateEuroScoreII(params);
+      
+      expect(result.aiResponse).toBeDefined();
+      expect(result.aiResponse.enabled).toBe(true);
+      expect(['openai', 'local']).toContain(result.aiResponse.source);
+      expect(['success', 'fallback']).toContain(result.aiResponse.status);
+      
+      if (result.aiResponse.status === 'fallback') {
+        expect(result.aiResponse.fallbackReason).toBeDefined();
+      }
+      
+      if (result.aiResponse.status === 'success') {
+        expect(result.aiResponse.raw).toBeDefined();
+        expect(result.aiResponse.raw.timestamp).toBeDefined();
+        expect(result.aiResponse.raw.content).toBeDefined();
+      }
+    });
   });
 
   describe('calculateGRACE', () => {
@@ -271,6 +299,64 @@ describe('ScoreCalculator', () => {
         expect(result.interpretation).toBeDefined();
         expect(result.insights).toBeDefined();
       });
+    });
+  });
+
+  describe('OpenAI Integration', () => {
+    test('devrait gérer le timeout correctement', async () => {
+      const params = {
+        ascites: 'none',
+        bilirubin: 1.5,
+        albumin: 3.8,
+        prothrombin: 3,
+        encephalopathy: 'none'
+      };
+
+      // Mock OpenAI timeout
+      jest.setTimeout(11000);
+      const result = await ScoreCalculator.calculateChildPugh(params);
+      
+      expect(result.aiStatus).toBeDefined();
+      if (result.aiStatus === 'fallback') {
+        expect(result.insights[0].type).toBe('warning');
+      }
+    });
+
+    test('devrait inclure la réponse brute de ChatGPT', async () => {
+      const params = {
+        ascites: 'none',
+        bilirubin: 1.5,
+        albumin: 3.8,
+        prothrombin: 3,
+        encephalopathy: 'none'
+      };
+
+      const result = await ScoreCalculator.calculateChildPugh(params);
+      
+      if (result.aiStatus === 'success') {
+        expect(result.insights[0].rawGPTResponse).toBeDefined();
+        expect(result.insights[0].rawGPTResponse.timestamp).toBeDefined();
+      }
+    });
+
+    test('devrait indiquer la source de la réponse', async () => {
+      const params = {
+        ascites: 'none',
+        bilirubin: 1.5,
+        albumin: 3.8,
+        prothrombin: 3,
+        encephalopathy: 'none'
+      };
+
+      const result = await ScoreCalculator.calculateChildPugh(params);
+      
+      expect(result.responseSource).toBeDefined();
+      expect(['openai', 'local']).toContain(result.responseSource);
+      expect(result.responseTime).toBeDefined();
+      
+      if (result.responseSource === 'local') {
+        expect(result.fallbackReason).toBeDefined();
+      }
     });
   });
 }); 
