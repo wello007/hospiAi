@@ -127,3 +127,8 @@
 {"level":"info","message":"Serveur démarré sur le port 3000","timestamp":"2024-12-27T11:01:07.999Z"}
 {"level":"error","message":"Error: connect ECONNREFUSED ::1:27017","timestamp":"2024-12-27T11:01:37.990Z"}
 {"level":"info","message":"Serveur démarré sur le port 3000","timestamp":"2024-12-27T14:26:53.586Z"}
+{"level":"info","message":"Serveur démarré sur le port 3000","timestamp":"2024-12-27T15:06:58.498Z"}
+{"level":"info","message":"Serveur démarré sur le port 3000","timestamp":"2024-12-27T15:09:45.249Z"}
+{"level":"info","message":"Serveur démarré sur le port 3000","timestamp":"2024-12-27T15:12:09.966Z"}
+{"level":"info","message":"Serveur démarré sur le port 3000","timestamp":"2024-12-27T15:14:42.209Z"}
+{"level":"info","message":"Serveur démarré sur le port 3000","timestamp":"2024-12-27T15:16:47.230Z"}
