@@ -1,0 +1,6 @@
+{"level":"error","message":"Erreur dans le calcul du score TIMI: this.interpretTIMI is not a function","timestamp":"2024-12-25T17:40:55.870Z"}
+{"level":"error","message":"Erreur dans le calcul du score TIMI: this.interpretTIMI is not a function","timestamp":"2024-12-25T17:40:55.950Z"}
+{"level":"error","message":"Erreur dans le calcul du score Sepsis: this.calculateSepsisRisk is not a function","timestamp":"2024-12-25T18:33:45.382Z"}
+{"level":"error","message":"Erreur lors du calcul du score: Erreur dans le calcul du score Sepsis","timestamp":"2024-12-25T18:33:45.385Z"}
+{"level":"error","message":"Erreur dans le calcul du score Sepsis: riskScore is not defined","timestamp":"2024-12-26T13:55:33.478Z"}
+{"level":"error","message":"Erreur lors du calcul du score: Erreur dans le calcul du score Sepsis","timestamp":"2024-12-26T13:55:33.480Z"}
