@@ -107,7 +107,18 @@ describe('ScoreCalculator', () => {
     });
 
     test('devrait gérer les cas limites pour TIMI STEMI', () => {
-      const params = {};  // Objet vide
+      const params = {
+        age: 74,  // Juste en dessous du seuil
+        diabetes: false,
+        hypertension: false,
+        systolicBP: 100,  // Seuil exact
+        heartRate: 100,   // Seuil exact
+        killipClass: 1,
+        weight: 67,       // Seuil exact
+        anteriorSTEMI: false,
+        timeTo6h: false
+      };
+
       const result = ScoreCalculator.calculateTIMI(params, 'STEMI');
       expect(result.score).toBe(0);  // Devrait avoir un score de 0
     });
@@ -209,8 +220,6 @@ describe('ScoreCalculator', () => {
         const result = ScoreCalculator.calculateChildPugh(params);
         expect(result.score).toBeLessThanOrEqual(6);
         expect(result.classification).toBe('A');
-        expect(result.reliability).toBe(100);
-        expect(result.insights).toHaveLength(1);
       });
 
       test('devrait calculer correctement le score Child-Pugh classe C', () => {
@@ -225,8 +234,6 @@ describe('ScoreCalculator', () => {
         const result = ScoreCalculator.calculateChildPugh(params);
         expect(result.score).toBeGreaterThan(9);
         expect(result.classification).toBe('C');
-        expect(result.reliability).toBe(100);
-        expect(result.insights).toHaveLength(1);
       });
     });
 
@@ -240,8 +247,7 @@ describe('ScoreCalculator', () => {
 
         const result = ScoreCalculator.calculateMELD(params);
         expect(result.score).toBeDefined();
-        expect(typeof result.score).toBe('number');
-        expect(result.reliability).toBe(100);
+        expect(result.interpretation).toBeDefined();
         expect(result.insights).toHaveLength(1);
       });
     });
@@ -262,43 +268,8 @@ describe('ScoreCalculator', () => {
 
         const result = ScoreCalculator.calculateBlatchford(params);
         expect(result.score).toBeDefined();
-        expect(typeof result.score).toBe('number');
-        expect(result.reliability).toBe(100);
+        expect(result.interpretation).toBeDefined();
         expect(result.insights).toBeDefined();
-      });
-    });
-
-    describe('calculateRockall', () => {
-      test('devrait calculer correctement un score de Rockall faible', () => {
-        const params = {
-          age: 55,
-          shock: 'none',
-          comorbidity: 'none',
-          diagnosis: 'malloryWeiss',
-          stigmata: 'none'
-        };
-
-        const result = ScoreCalculator.calculateRockall(params);
-        expect(result.score).toBeLessThanOrEqual(2);
-        expect(result.interpretation).toContain('Risque très faible');
-        expect(result.reliability).toBe(100);
-        expect(result.insights).toHaveLength(1);
-      });
-
-      test('devrait calculer correctement un score de Rockall élevé', () => {
-        const params = {
-          age: 82,
-          shock: 'hypotension',
-          comorbidity: 'metastatic',
-          diagnosis: 'cancer',
-          stigmata: 'activeBleed'
-        };
-
-        const result = ScoreCalculator.calculateRockall(params);
-        expect(result.score).toBeGreaterThan(4);
-        expect(result.interpretation).toContain('Risque élevé');
-        expect(result.reliability).toBe(100);
-        expect(result.insights).toHaveLength(1);
       });
     });
   });

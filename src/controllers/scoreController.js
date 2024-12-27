@@ -1,8 +1,6 @@
 const ScoreCalculator = require('../services/scoreCalculator');
 const scoreValidator = require('../validators/scoreValidator');
 const logger = require('../utils/logger');
-const TrendAnalyzer = require('../services/trendAnalyzer');
-const ScoreHistory = require('../models/scoreHistory');
 
 class ScoreController {
   calculateScore(req, res) {
@@ -68,16 +66,6 @@ class ScoreController {
           });
       }
 
-      const historicalScores = await ScoreHistory.find({ 
-        patientId: req.body.patientId,
-        scoreType: scoreType 
-      }).sort({ createdAt: -1 }).limit(5);
-
-      if (historicalScores.length > 0) {
-        const trends = TrendAnalyzer.analyzeTrends(historicalScores);
-        result.trends = trends;
-      }
-
       return res.json({
         status: 'success',
         data: result
@@ -89,34 +77,6 @@ class ScoreController {
         status: 'error',
         message: 'Erreur lors du calcul du score',
         error: error.message
-      });
-    }
-  }
-
-  calculateMultipleScores(req, res) {
-    try {
-      const { scores } = req.body;
-      const results = {};
-      
-      for (const scoreRequest of scores) {
-        const result = this.calculateScore(scoreRequest);
-        results[scoreRequest.scoreType] = result;
-      }
-
-      const crossInsights = ScoreCalculator.generateCrossScoreInsights(results);
-      
-      return res.json({
-        status: 'success',
-        data: {
-          scores: results,
-          crossInsights
-        }
-      });
-    } catch (error) {
-      logger.error(`Erreur lors du calcul multiple: ${error.message}`);
-      return res.status(500).json({
-        status: 'error',
-        message: error.message
       });
     }
   }

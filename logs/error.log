@@ -17,3 +17,6 @@
 {"level":"error","message":"Erreur dans le calcul du score TIMI: Cannot read properties of undefined (reading 'age')","timestamp":"2024-12-27T10:30:50.701Z"}
 {"level":"error","message":"Erreur dans le calcul du score TIMI: Cannot read properties of undefined (reading 'age')","timestamp":"2024-12-27T10:30:50.702Z"}
 {"level":"error","message":"Erreur dans le calcul du score TIMI: Cannot read properties of undefined (reading 'age')","timestamp":"2024-12-27T10:30:50.706Z"}
+{"level":"error","message":"Error: connect ECONNREFUSED ::1:27017","timestamp":"2024-12-27T10:58:59.461Z"}
+{"level":"error","message":"Error: connect ECONNREFUSED ::1:27017","timestamp":"2024-12-27T11:00:02.525Z"}
+{"level":"error","message":"Error: connect ECONNREFUSED ::1:27017","timestamp":"2024-12-27T11:01:37.990Z"}

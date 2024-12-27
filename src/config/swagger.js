@@ -1,10 +1,41 @@
 const swaggerSpec = {
   openapi: '3.0.0',
   info: {
-    title: 'API de Scores Cardiaques',
+    title: 'API de Scores Médicaux',
     version: '1.0.0',
-    description: 'API pour le calcul de différents scores de risque en cardiologie'
+    description: `API pour le calcul de scores médicaux en cardiologie et gastroentérologie.
+    
+    Cette API permet de calculer différents scores pronostiques et diagnostiques utilisés en pratique clinique.
+    Chaque score est accompagné d'insights cliniques et de recommandations basées sur les guidelines actuelles.`,
+    contact: {
+      name: 'Support API',
+      email: 'support@api-medicale.com'
+    },
+    license: {
+      name: 'MIT',
+      url: 'https://opensource.org/licenses/MIT'
+    }
   },
+  servers: [
+    {
+      url: 'http://localhost:3000',
+      description: 'Serveur de développement'
+    }
+  ],
+  tags: [
+    {
+      name: 'Scores Cardiaques',
+      description: 'Scores de risque cardiovasculaire'
+    },
+    {
+      name: 'Scores Gastroentérologiques',
+      description: 'Scores hépatiques et digestifs'
+    },
+    {
+      name: 'Authentification',
+      description: 'Endpoints d\'authentification'
+    }
+  ],
   components: {
     securitySchemes: {
       bearerAuth: {
@@ -14,29 +45,186 @@ const swaggerSpec = {
       }
     },
     schemas: {
-      SepsisParams: {
+      // Schémas des paramètres pour chaque score
+      ChildPughParams: {
         type: 'object',
+        required: ['ascites', 'bilirubin', 'albumin', 'prothrombin', 'encephalopathy'],
         properties: {
-          mentalStatus: {
-            type: 'number',
-            description: 'Score de Glasgow (3-15)',
-            minimum: 3,
-            maximum: 15
+          ascites: {
+            type: 'string',
+            enum: ['none', 'mild', 'severe'],
+            description: 'Présence et sévérité de l\'ascite'
           },
-          respiratoryRate: {
+          bilirubin: {
             type: 'number',
-            description: 'Fréquence respiratoire (respirations/min)',
+            description: 'Bilirubine totale en mg/dL',
             minimum: 0,
-            maximum: 60
+            maximum: 100
           },
-          // ... autres paramètres avec leurs descriptions ...
+          albumin: {
+            type: 'number',
+            description: 'Albumine sérique en g/dL',
+            minimum: 0,
+            maximum: 10
+          },
+          prothrombin: {
+            type: 'number',
+            description: 'Temps de prothrombine en secondes',
+            minimum: 0,
+            maximum: 100
+          },
+          encephalopathy: {
+            type: 'string',
+            enum: ['none', 'mild', 'severe'],
+            description: 'Degré d\'encéphalopathie hépatique'
+          }
+        }
+      },
+      MELDParams: {
+        type: 'object',
+        required: ['bilirubin', 'inr', 'creatinine'],
+        properties: {
+          bilirubin: {
+            type: 'number',
+            description: 'Bilirubine totale en mg/dL',
+            minimum: 0,
+            maximum: 100
+          },
+          inr: {
+            type: 'number',
+            description: 'International Normalized Ratio',
+            minimum: 0,
+            maximum: 20
+          },
+          creatinine: {
+            type: 'number',
+            description: 'Créatinine sérique en mg/dL',
+            minimum: 0,
+            maximum: 15
+          }
+        }
+      },
+      BlatchfordParams: {
+        type: 'object',
+        required: ['bloodUrea', 'hemoglobin', 'gender', 'systolicBP'],
+        properties: {
+          bloodUrea: {
+            type: 'number',
+            description: 'Urée sanguine en mmol/L',
+            minimum: 0,
+            maximum: 50
+          },
+          hemoglobin: {
+            type: 'number',
+            description: 'Hémoglobine en g/dL',
+            minimum: 0,
+            maximum: 25
+          },
+          gender: {
+            type: 'string',
+            enum: ['M', 'F'],
+            description: 'Sexe du patient'
+          },
+          systolicBP: {
+            type: 'number',
+            description: 'Pression artérielle systolique en mmHg',
+            minimum: 0,
+            maximum: 300
+          },
+          pulse: {
+            type: 'number',
+            description: 'Fréquence cardiaque en bpm'
+          },
+          melena: {
+            type: 'boolean',
+            description: 'Présence de méléna'
+          },
+          syncope: {
+            type: 'boolean',
+            description: 'Présence de syncope'
+          },
+          hepaticDisease: {
+            type: 'boolean',
+            description: 'Présence de maladie hépatique'
+          },
+          cardiacFailure: {
+            type: 'boolean',
+            description: 'Présence d\'insuffisance cardiaque'
+          }
+        }
+      }
+    },
+    responses: {
+      ScoreResponse: {
+        description: 'Réponse du calcul de score',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                status: {
+                  type: 'string',
+                  enum: ['success', 'error']
+                },
+                data: {
+                  type: 'object',
+                  properties: {
+                    score: {
+                      type: 'number',
+                      description: 'Valeur numérique du score'
+                    },
+                    reliability: {
+                      type: 'number',
+                      description: 'Fiabilité du calcul en pourcentage'
+                    },
+                    scoreName: {
+                      type: 'string',
+                      description: 'Nom du score calculé'
+                    },
+                    interpretation: {
+                      type: 'string',
+                      description: 'Interprétation clinique du score'
+                    },
+                    insights: {
+                      type: 'array',
+                      description: 'Analyses et recommandations cliniques',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          type: {
+                            type: 'string',
+                            enum: ['warning', 'critical', 'info']
+                          },
+                          category: {
+                            type: 'string'
+                          },
+                          message: {
+                            type: 'string'
+                          },
+                          implications: {
+                            type: 'array',
+                            items: {
+                              type: 'string'
+                            }
+                          },
+                          recommendations: {
+                            type: 'array',
+                            items: {
+                              type: 'string'
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
   },
-  security: [{
-    bearerAuth: []
-  }],
   paths: {
     '/api/scores/calculate': {
       post: {
@@ -200,19 +388,6 @@ const swaggerSpec = {
                       bilirubin: 2.5,
                       inr: 1.5,
                       creatinine: 1.2
-                    }
-                  }
-                },
-                rockall: {
-                  summary: 'Exemple Rockall',
-                  value: {
-                    scoreType: 'rockall',
-                    params: {
-                      age: 75,
-                      shock: 'tachycardia',
-                      comorbidity: 'cardiac',
-                      diagnosis: 'pepticUlcer',
-                      stigmata: 'adherentClot'
                     }
                   }
                 }

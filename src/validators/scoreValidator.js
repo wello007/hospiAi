@@ -137,17 +137,6 @@ const gastroScores = {
       hepaticDisease: Joi.boolean(),
       cardiacFailure: Joi.boolean()
     }).required()
-  }).options({ allowUnknown: false }),
-
-  rockall: Joi.object({
-    scoreType: Joi.string().required(),
-    params: Joi.object({
-      age: Joi.number().min(0).max(120).required(),
-      shock: Joi.string().valid('none', 'tachycardia', 'hypotension').required(),
-      comorbidity: Joi.string().valid('none', 'cardiac', 'renal', 'hepatic', 'metastatic').required(),
-      diagnosis: Joi.string().valid('malloryWeiss', 'noneFound', 'pepticUlcer', 'cancer').required(),
-      stigmata: Joi.string().valid('none', 'blood', 'adherentClot', 'visibleVessel', 'activeBleed').required()
-    }).required()
   }).options({ allowUnknown: false })
 };
 
