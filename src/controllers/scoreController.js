@@ -17,7 +17,11 @@ class ScoreController {
       }
 
       // Validation directe de req.body
-      const { error, value } = validationSchema.validate(req.body);
+      const { error, value } = validationSchema.validate(req.body, {
+        stripUnknown: true,
+        allowUnknown: false
+      });
+
       if (error) {
         return res.status(400).json({
           status: 'error',
