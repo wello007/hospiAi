@@ -46,16 +46,6 @@ Je rêve d'un système de santé où :
 
 ## 📚 Ressources Favorites
 
-### Livres
-- "Deep Medicine" par Eric Topol
-- "The Digital Doctor" par Robert Wachter
-- "Artificial Intelligence in Medicine" par Peter Szolovits
-
-### Conférences
-- MEDINFO (World Congress on Medical and Health Informatics)
-- AMIA (American Medical Informatics Association)
-- HIMSS (Healthcare Information and Management Systems Society)
-
 ## 🤝 Collaboration
 
 Je suis toujours ouvert aux collaborations sur des projets innovants en santé numérique. Contactez-moi pour :
@@ -65,11 +55,7 @@ Je suis toujours ouvert aux collaborations sur des projets innovants en santé n
 - Partage de connaissances
 
 ## 📫 Contact
-
-- LinkedIn: [Votre profil LinkedIn]
-- Email: votre.email@example.com
-- Twitter: [@VotreCompte]
-- GitHub: [Votre profil GitHub]
+- Email: wdib@yahoo.com
 
 ---
 
