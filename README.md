@@ -1,6 +1,6 @@
-# 🏥 API de Scores Médicaux avec IA
+# 🏥 API de Scores Médicaux
 
-Une API RESTful moderne pour le calcul de scores médicaux, enrichie par l'intelligence artificielle pour une aide à la décision médicale optimisée.
+Une API RESTful moderne pour le calcul de scores médicaux, pour une aide à la décision médicale optimisée.
 
 ## ✨ Caractéristiques
 
