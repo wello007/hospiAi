@@ -103,4 +103,55 @@ const scoreValidationSchema = {
   })
 };
 
-module.exports = scoreValidationSchema; 
+const gastroScores = {
+  childpugh: Joi.object({
+    scoreType: Joi.string().required(),
+    params: Joi.object({
+      ascites: Joi.string().valid('none', 'mild', 'severe').required(),
+      bilirubin: Joi.number().min(0).max(100).required(),
+      albumin: Joi.number().min(0).max(10).required(),
+      prothrombin: Joi.number().min(0).max(100).required(),
+      encephalopathy: Joi.string().valid('none', 'mild', 'severe').required()
+    }).required()
+  }).options({ allowUnknown: false }),
+
+  meld: Joi.object({
+    scoreType: Joi.string().required(),
+    params: Joi.object({
+      bilirubin: Joi.number().min(0).max(100).required(),
+      inr: Joi.number().min(0).max(20).required(),
+      creatinine: Joi.number().min(0).max(15).required()
+    }).required()
+  }).options({ allowUnknown: false }),
+
+  blatchford: Joi.object({
+    scoreType: Joi.string().required(),
+    params: Joi.object({
+      bloodUrea: Joi.number().min(0).max(50).required(),
+      hemoglobin: Joi.number().min(0).max(25).required(),
+      gender: Joi.string().valid('M', 'F').required(),
+      systolicBP: Joi.number().min(0).max(300).required(),
+      pulse: Joi.number().min(0).max(300),
+      melena: Joi.boolean(),
+      syncope: Joi.boolean(),
+      hepaticDisease: Joi.boolean(),
+      cardiacFailure: Joi.boolean()
+    }).required()
+  }).options({ allowUnknown: false }),
+
+  rockall: Joi.object({
+    scoreType: Joi.string().required(),
+    params: Joi.object({
+      age: Joi.number().min(0).max(120).required(),
+      shock: Joi.string().valid('none', 'tachycardia', 'hypotension').required(),
+      comorbidity: Joi.string().valid('none', 'cardiac', 'renal', 'hepatic', 'metastatic').required(),
+      diagnosis: Joi.string().valid('malloryWeiss', 'noneFound', 'pepticUlcer', 'cancer').required(),
+      stigmata: Joi.string().valid('none', 'blood', 'adherentClot', 'visibleVessel', 'activeBleed').required()
+    }).required()
+  }).options({ allowUnknown: false })
+};
+
+module.exports = {
+  ...scoreValidationSchema,
+  ...gastroScores
+}; 

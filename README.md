@@ -15,6 +15,12 @@ Une API RESTful moderne pour le calcul de scores médicaux pour une aide à la d
 - Analyse multiparamétrique
 - Recommandations basées sur les guidelines SSC
 
+### 🫀 Scores Gastroentérologiques
+- **Score de Child-Pugh** - Évaluation de la sévérité de la cirrhose
+- **Score MELD** - Prédiction de la mortalité hépatique
+- **Score de Glasgow-Blatchford** - Évaluation du risque hémorragique digestif
+- **Score de Rockall** - Pronostic post-endoscopique des hémorragies digestives
+
 ## Documentation
 
 - Documentation Swagger disponible sur : `http://localhost:3000/api-docs`

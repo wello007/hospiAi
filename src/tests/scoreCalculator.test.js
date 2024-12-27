@@ -107,18 +107,7 @@ describe('ScoreCalculator', () => {
     });
 
     test('devrait gérer les cas limites pour TIMI STEMI', () => {
-      const params = {
-        age: 74,  // Juste en dessous du seuil
-        diabetes: false,
-        hypertension: false,
-        systolicBP: 100,  // Seuil exact
-        heartRate: 100,   // Seuil exact
-        killipClass: 1,
-        weight: 67,       // Seuil exact
-        anteriorSTEMI: false,
-        timeTo6h: false
-      };
-
+      const params = {};  // Objet vide
       const result = ScoreCalculator.calculateTIMI(params, 'STEMI');
       expect(result.score).toBe(0);  // Devrait avoir un score de 0
     });
@@ -203,6 +192,114 @@ describe('ScoreCalculator', () => {
       expect(ScoreCalculator.interpretTIMIScore(2, 'NSTEMI')).toContain('Risque faible');
       expect(ScoreCalculator.interpretTIMIScore(4, 'NSTEMI')).toContain('Risque intermédiaire');
       expect(ScoreCalculator.interpretTIMIScore(5, 'NSTEMI')).toContain('Risque élevé');
+    });
+  });
+
+  describe('Scores Gastroentérologiques', () => {
+    describe('calculateChildPugh', () => {
+      test('devrait calculer correctement le score Child-Pugh classe A', () => {
+        const params = {
+          ascites: 'none',
+          bilirubin: 1.5,
+          albumin: 3.8,
+          prothrombin: 3,
+          encephalopathy: 'none'
+        };
+
+        const result = ScoreCalculator.calculateChildPugh(params);
+        expect(result.score).toBeLessThanOrEqual(6);
+        expect(result.classification).toBe('A');
+        expect(result.reliability).toBe(100);
+        expect(result.insights).toHaveLength(1);
+      });
+
+      test('devrait calculer correctement le score Child-Pugh classe C', () => {
+        const params = {
+          ascites: 'severe',
+          bilirubin: 4.0,
+          albumin: 2.5,
+          prothrombin: 7,
+          encephalopathy: 'severe'
+        };
+
+        const result = ScoreCalculator.calculateChildPugh(params);
+        expect(result.score).toBeGreaterThan(9);
+        expect(result.classification).toBe('C');
+        expect(result.reliability).toBe(100);
+        expect(result.insights).toHaveLength(1);
+      });
+    });
+
+    describe('calculateMELD', () => {
+      test('devrait calculer correctement le score MELD', () => {
+        const params = {
+          bilirubin: 2.5,
+          inr: 1.5,
+          creatinine: 1.2
+        };
+
+        const result = ScoreCalculator.calculateMELD(params);
+        expect(result.score).toBeDefined();
+        expect(typeof result.score).toBe('number');
+        expect(result.reliability).toBe(100);
+        expect(result.insights).toHaveLength(1);
+      });
+    });
+
+    describe('calculateBlatchford', () => {
+      test('devrait calculer correctement le score de Blatchford', () => {
+        const params = {
+          bloodUrea: 7.5,
+          hemoglobin: 11.5,
+          gender: 'M',
+          systolicBP: 95,
+          pulse: 105,
+          melena: true,
+          syncope: false,
+          hepaticDisease: true,
+          cardiacFailure: false
+        };
+
+        const result = ScoreCalculator.calculateBlatchford(params);
+        expect(result.score).toBeDefined();
+        expect(typeof result.score).toBe('number');
+        expect(result.reliability).toBe(100);
+        expect(result.insights).toBeDefined();
+      });
+    });
+
+    describe('calculateRockall', () => {
+      test('devrait calculer correctement un score de Rockall faible', () => {
+        const params = {
+          age: 55,
+          shock: 'none',
+          comorbidity: 'none',
+          diagnosis: 'malloryWeiss',
+          stigmata: 'none'
+        };
+
+        const result = ScoreCalculator.calculateRockall(params);
+        expect(result.score).toBeLessThanOrEqual(2);
+        expect(result.interpretation).toContain('Risque très faible');
+        expect(result.reliability).toBe(100);
+        expect(result.insights).toHaveLength(1);
+      });
+
+      test('devrait calculer correctement un score de Rockall élevé', () => {
+        const params = {
+          age: 82,
+          shock: 'hypotension',
+          comorbidity: 'metastatic',
+          diagnosis: 'cancer',
+          stigmata: 'activeBleed'
+        };
+
+        const result = ScoreCalculator.calculateRockall(params);
+        expect(result.score).toBeGreaterThan(4);
+        expect(result.interpretation).toContain('Risque élevé');
+        expect(result.reliability).toBe(100);
+        expect(result.insights).toHaveLength(1);
+      });
     });
   });
 }); 

@@ -53,7 +53,7 @@ const swaggerSpec = {
                 properties: {
                   scoreType: {
                     type: 'string',
-                    enum: ['euroscore2', 'grace', 'timi', 'cha2ds2vasc', 'sepsis'],
+                    enum: ['euroscore2', 'grace', 'timi', 'cha2ds2vasc', 'sepsis', 'childpugh', 'meld', 'blatchford', 'rockall'],
                     description: 'Type de score à calculer'
                   },
                   type: {
@@ -176,6 +176,43 @@ const swaggerSpec = {
                       immunosuppression: false,
                       recentSurgery: true,
                       chronicDisease: true
+                    }
+                  }
+                },
+                childPugh: {
+                  summary: 'Exemple Child-Pugh',
+                  value: {
+                    scoreType: 'childpugh',
+                    params: {
+                      ascites: 'mild',
+                      bilirubin: 2.5,
+                      albumin: 3.2,
+                      prothrombin: 5,
+                      encephalopathy: 'none'
+                    }
+                  }
+                },
+                meld: {
+                  summary: 'Exemple MELD',
+                  value: {
+                    scoreType: 'meld',
+                    params: {
+                      bilirubin: 2.5,
+                      inr: 1.5,
+                      creatinine: 1.2
+                    }
+                  }
+                },
+                rockall: {
+                  summary: 'Exemple Rockall',
+                  value: {
+                    scoreType: 'rockall',
+                    params: {
+                      age: 75,
+                      shock: 'tachycardia',
+                      comorbidity: 'cardiac',
+                      diagnosis: 'pepticUlcer',
+                      stigmata: 'adherentClot'
                     }
                   }
                 }

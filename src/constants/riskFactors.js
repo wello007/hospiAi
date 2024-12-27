@@ -195,6 +195,118 @@ const SEPSIS_FACTORS = {
   }
 };
 
+const GASTRO_FACTORS = {
+  // Score de Child-Pugh (cirrhose)
+  childPugh: {
+    ascites: {
+      none: 1,
+      mild: 2,
+      severe: 3
+    },
+    bilirubin: {  // mg/dL
+      less2: 1,    // <2
+      two3: 2,     // 2-3
+      more3: 3     // >3
+    },
+    albumin: {     // g/dL
+      more35: 1,   // >3.5
+      two835: 2,   // 2.8-3.5
+      less28: 3    // <2.8
+    },
+    prothrombin: { // secondes
+      less4: 1,    // <4
+      four6: 2,    // 4-6
+      more6: 3     // >6
+    },
+    encephalopathy: {
+      none: 1,
+      mild: 2,
+      severe: 3
+    }
+  },
+
+  // Score de MELD (Model for End-Stage Liver Disease)
+  meld: {
+    coefficients: {
+      bilirubin: 3.78,
+      creatinine: 9.57,
+      inr: 11.2
+    },
+    constant: 6.43
+  },
+
+  // Score de Glasgow-Blatchford (hémorragie digestive)
+  blatchford: {
+    bloodUrea: {
+      less65: 0,
+      '6.5-7.9': 2,
+      '8.0-9.9': 3,
+      '10.0-25.0': 4,
+      more25: 6
+    },
+    hemoglobin: {
+      male: {
+        more13: 0,
+        '12.0-12.9': 1,
+        '10.0-11.9': 3,
+        less10: 6
+      },
+      female: {
+        more12: 0,
+        '10.0-11.9': 1,
+        less10: 6
+      }
+    },
+    systolicBP: {
+      more110: 0,
+      '100-109': 1,
+      '90-99': 2,
+      less90: 3
+    },
+    otherMarkers: {
+      pulse100: 1,
+      melena: 1,
+      syncope: 2,
+      hepaticDisease: 2,
+      cardiacFailure: 2
+    }
+  },
+
+  // Score de Rockall (post-endoscopique)
+  rockall: {
+    age: {
+      less60: 0,
+      '60-79': 1,
+      more80: 2
+    },
+    shock: {
+      none: 0,
+      tachycardia: 1,
+      hypotension: 2
+    },
+    comorbidity: {
+      none: 0,
+      cardiac: 2,
+      renal: 2,
+      hepatic: 3,
+      metastatic: 3
+    },
+    diagnosis: {
+      malloryWeiss: 0,
+      noneFound: 0,
+      pepticUlcer: 2,
+      cancer: 3
+    },
+    stigmata: {
+      none: 0,
+      blood: 2,
+      adherentClot: 2,
+      visibleVessel: 2,
+      activeBleed: 3
+    }
+  }
+};
+
 const REQUIRED_PARAMETERS = [
   'age',
   'gender',
@@ -210,5 +322,6 @@ module.exports = {
   TIMI_FACTORS,
   CHA2DS2_VASC_FACTORS,
   REQUIRED_PARAMETERS,
-  SEPSIS_FACTORS
+  SEPSIS_FACTORS,
+  GASTRO_FACTORS
 }; 
